@@ -1,0 +1,159 @@
+[
+    {
+        "firstName": "John",
+        "lastName": "Doe",
+        "dateOfBirth": "19891002",
+        "phoneNumber": [ "1-202-555-0164" ],
+        "address": [ {
+            "country": "California",
+            "zipCode": "92614",
+            "city": "Irvine",
+            "street": "950 Joy Lane"
+        },
+			{
+            "country": "Caaalifornia",
+            "zipCode": "9214",
+            "city": "Irrvine",
+            "street": "90 Jane"
+        } ] 
+    },
+    {
+        "title": "Mrs",
+        "firstName": "Karen",
+        "lastName": "Wilkinson",
+        "dateOfBirth": "19981225",
+        "phoneNumber": [ "1-202-555-0118" ],
+        "address": [ {
+            "country": "Arizona",
+            "zipCode": "85012",
+            "city": "Phoenix",
+            "street": "1989 Preston Street"
+        } ] 
+    },
+    {
+        "title": "Mr",
+        "firstName": "Gary",
+        "lastName": "Fleming",
+        "dateOfBirth": "19620620",
+        "phoneNumber": [ "1-202-555-0144" ],
+        "address": [ {
+            "country": "Connecticut",
+            "zipCode": "06103",
+            "city": "Hartford",
+            "street": "351 Red Bud Lane"
+        } ] 
+    },
+    {
+        "firstName": "John",
+        "lastName": "Mamford",
+        "dateOfBirth": "19901128",
+        "phoneNumber": [ "1-202-555-0118" ],
+        "address": [ {
+            "country": "Louisiana",
+            "zipCode": "70139",
+            "city": "New Orleans",
+            "street": "4571 Wood Street"
+        } ] 
+    },
+    {
+        "firstName": "Christian",
+        "lastName": "Mamford",
+        "dateOfBirth": "19920702",
+        "phoneNumber": [ "1-202-555-0178" ],
+        "address": [ {
+            "country": "California",
+            "zipCode": "92101",
+            "city": "San Diego",
+            "street": "4923 Poplar Avenue"
+        } ] 
+    },
+    {
+        "title": "Ms",
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "dateOfBirth": "19450901",
+        "phoneNumber": [ "1-202-555-0113" ],
+        "address": [ {
+            "country": "California",
+            "zipCode": "95926",
+            "city": "Chico",
+            "street": "1048 Hill Croft Farm Road"
+        } ] 
+    },
+    {
+        "title": "Ms",
+        "firstName": "Katy",
+        "lastName": "Cunningham",
+        "dateOfBirth": "19720830",
+        "phoneNumber": [ "1-202-555-0118" ],
+        "address": [ {
+            "country": "Pennsylvania",
+            "zipCode": "15203",
+            "city": "Pittsburgh",
+            "street": "677 Leo Street"
+        } ] 
+    },
+    {
+        "title": "Mr",
+        "firstName": "David",
+        "lastName": "Roberson",
+        "dateOfBirth": "19441231",
+        "phoneNumber": [ "1-202-555-0169" ],
+        "address": [ {
+            "country": "Texas",
+            "zipCode": "76531",
+            "city": "Hamilton",
+            "street": "3635 Sussex Court"
+        } ] 
+    },
+    {
+        "title": "Mrs",
+        "firstName": "Tammy",
+        "lastName": "Miller",
+        "dateOfBirth": "19570101",
+        "phoneNumber": [ "1-202-555-0151" ],
+        "address": [ {
+            "country": "Iowa",
+            "zipCode": "51331",
+            "city": "Arnolds Park",
+            "street": "3092 Ashwood Drive"
+        } ] 
+    },
+    {
+        "title": "Mr",
+        "firstName": "Ryan",
+        "lastName": "Miller",
+        "dateOfBirth": "19501002",
+        "phoneNumber": [ "1-202-555-0123" ],
+        "address": [ {
+            "country": "Iowa",
+            "zipCode": "51331",
+            "city": "Arnolds Park",
+            "street": "3092 Ashwood Drive"
+        } ]
+    },
+    {
+        "firstName": "Ryan",
+        "lastName": "Miller",
+        "dateOfBirth": "20050228",
+        "phoneNumber": [ "1-202-555-0121" ],
+        "address": [ {
+            "country": "Michigan",
+            "zipCode": "48075",
+            "city": "Southfield",
+            "street": "1735 Elk Avenue"
+        } ] 
+    },
+    {
+        "firstName": "Helen",
+        "lastName": "Parrish",
+        "dateOfBirth": "20000730",
+        "phoneNumber": [ "1-202-555-0189" ],
+        "address": [ {
+            "country": "West Virginia",
+            "zipCode": "25414",
+            "city": "Charles Town",
+            "street": "4005 Augusta Park"
+        } ] 
+    }
+]
