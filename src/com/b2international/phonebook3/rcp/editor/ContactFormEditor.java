@@ -75,5 +75,20 @@ public class ContactFormEditor extends FormEditor {
 		dirty = true;
 		firePropertyChange(PROP_DIRTY);
 	}
+	
+	public String getPartName() {
+		return contact.getFirstName() + " " + contact.getLastName();
+	}
+
+	@Override
+	public String toString() {
+		return "FormEditor: " + contact.getFirstName() + " " + contact.getLastName();
+	}
+	
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		super.dispose();
+	}
 
 }

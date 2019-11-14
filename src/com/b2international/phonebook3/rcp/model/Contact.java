@@ -63,6 +63,9 @@ public class Contact {
 	}
 
 	public Title getTitle() {
+		if(title == null) {
+			return Title.DEFAULT;
+		}
 		return title;
 	}
 

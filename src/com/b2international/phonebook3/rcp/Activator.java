@@ -28,12 +28,14 @@ public class Activator extends AbstractUIPlugin {
 
 	private Path appHome;
 	
+	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		appHome = Paths.get(System.getProperty("app.home", System.getProperty("user.home") + "/.gabicontacts/"));
 		ContactJsonHandler.readContactsFromFile(appHome.resolve(DB_FILE));
 		plugin = this;
+
 	}
 
 	@Override
