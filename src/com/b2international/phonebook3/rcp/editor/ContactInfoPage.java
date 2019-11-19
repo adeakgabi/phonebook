@@ -31,7 +31,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import com.b2international.phonebook3.rcp.model.Contact;
 import com.b2international.phonebook3.rcp.model.Title;
 
 public class ContactInfoPage extends FormPage implements IChangeListener {
@@ -39,8 +38,12 @@ public class ContactInfoPage extends FormPage implements IChangeListener {
 	public static final String ID = "com.b2international.phonebook3.rcp.editor.contactinfopage";
 	
 	private final ContactFormEditor contactFormEditor;
-	private final Contact contact;
+	private final EditorContact contact;
 	private final DataBindingContext bindingContext;
+	private Text firstNameText;
+	private Text lastNameText;
+	private DateTime date;
+	private Title title;
 
 	public ContactInfoPage(ContactFormEditor editor, String id, String title) {
 		super(editor, id, title);
@@ -84,15 +87,15 @@ public class ContactInfoPage extends FormPage implements IChangeListener {
 		titleViewer.setSelection(new StructuredSelection(contact.getTitle()));
 
 		toolkit.createLabel(composite, "First name:");
-		final Text firstNameText = toolkit.createText(composite, contact.getFirstName());
+		firstNameText = toolkit.createText(composite, contact.getFirstName());
 		firstNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		toolkit.createLabel(composite, "Last name:");
-		final Text lastNameText = new Text(composite, SWT.TOP);
+		lastNameText = toolkit.createText(composite, contact.getLastName());
 		lastNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		toolkit.createLabel(composite, "Date of birth:");
-		final DateTime date = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN);
+		date = new DateTime(composite, SWT.DATE | SWT.DROP_DOWN);
 		date.setLayoutData(GridDataFactory.fillDefaults().create());
 
 		initDataBindingOn(firstNameText, "firstName");
@@ -104,7 +107,7 @@ public class ContactInfoPage extends FormPage implements IChangeListener {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initDataBindingOn(Text textField, String fieldName) {
 		IObservableValue targetObservable = WidgetProperties.text(SWT.Modify).observe(textField);
-		IObservableValue modelObservable = PojoProperties.value(Contact.class, fieldName).observe(contact);
+		IObservableValue modelObservable = PojoProperties.value(EditorContact.class, fieldName).observe(contact);
 		Binding binding = bindingContext.bindValue(targetObservable, modelObservable);
 		binding.getTarget().addChangeListener(this);
 	}
@@ -112,7 +115,7 @@ public class ContactInfoPage extends FormPage implements IChangeListener {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initDataBindingOn(DateTime dateTime, String fieldName) {
 		final IObservableValue targetObservable = WidgetProperties.dateTimeSelection().observe(dateTime);
-		final IObservableValue modelObservable = PojoProperties.value(Contact.class, fieldName).observe(contact);
+		final IObservableValue modelObservable = PojoProperties.value(EditorContact.class, fieldName).observe(contact);
 	
 		final IConverter dateToLocalDateConverter = IConverter.create(Date.class, LocalDate.class, (o1) -> {
 			if(o1 instanceof Date) {
@@ -142,7 +145,7 @@ public class ContactInfoPage extends FormPage implements IChangeListener {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initDataBindingOn(ComboViewer comboViewer, String fieldName) {
 		final ISWTObservableValue<String> targetObservable = WidgetProperties.comboSelection().observe(comboViewer.getCombo());
-		final IObservableValue modelObservable = PojoProperties.value(Contact.class, fieldName).observe(contact);
+		final IObservableValue modelObservable = PojoProperties.value(EditorContact.class, fieldName).observe(contact);
 		
 		final IConverter stringToTitleConverter = IConverter.create(String.class, Title.class, (o1) -> {
 			final String title = (String) o1;

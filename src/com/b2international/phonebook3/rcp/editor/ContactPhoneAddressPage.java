@@ -20,14 +20,13 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
 import com.b2international.phonebook3.rcp.model.Address;
-import com.b2international.phonebook3.rcp.model.Contact;
 
 public class ContactPhoneAddressPage extends FormPage {
 	
 	public static final String ID = "com.b2international.phonebook3.rcp.editor.contactphoneaddresspage";
 	
 	private ContactFormEditor contactFormEditor;
-	private Contact contact;
+	private EditorContact contact;
 	private TableViewer addressViewer;
 	private TableViewer phoneNumberViewer;
 
@@ -80,7 +79,6 @@ public class ContactPhoneAddressPage extends FormPage {
 				contactFormEditor.notifyTableEditing();
 				newPhoneNumbers.remove(phoneNumber);
 				newPhoneNumbers.add((String) newPhoneNumber);
-				contact.setPhoneNumbers(newPhoneNumbers);
 			}
 			phoneNumberViewer.setInput(contact.getPhoneNumbers());
 		}));

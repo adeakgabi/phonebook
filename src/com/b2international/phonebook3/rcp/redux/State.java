@@ -21,6 +21,10 @@ public class State {
 		return contactsMap;
 	}
 	
+	public Contact getContact(String contactId) {
+		return getContactsMap().get(contactId);
+	}
+	
 	public Set<FormEditor> getEditorState() {
 		return editorState;
 	}
@@ -34,5 +38,5 @@ public class State {
 		contacts.append(editorState.toString());
 		return contacts.toString();
 	}
-	
+
 }

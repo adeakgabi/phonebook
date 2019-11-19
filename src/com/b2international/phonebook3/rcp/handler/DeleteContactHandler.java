@@ -9,16 +9,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import com.b2international.phonebook3.rcp.api.ContactService;
-import com.b2international.phonebook3.rcp.exceptions.ContactNotFoundException;
+import com.b2international.phonebook3.rcp.Activator;
+import com.b2international.phonebook3.rcp.contact.BulkRemoveAction;
+import com.b2international.phonebook3.rcp.contact.DeleteContactAction;
 import com.b2international.phonebook3.rcp.model.Contact;
 import com.google.common.collect.Lists;
 
 public class DeleteContactHandler extends AbstractHandler {
 
 	public static final String ID = "com.b2international.phonebook3.rcp.deletecontact";
-
-	private final ContactService contactService = ContactService.getInstance();
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -44,7 +43,7 @@ public class DeleteContactHandler extends AbstractHandler {
 							+ "?");
 
 			if (confirmation) {
-				contactService.deleteContact(contact.getId());
+				Activator.getStore().dispatch(new DeleteContactAction(contact.getId()));
 			}
 			
 		} else {
@@ -62,11 +61,7 @@ public class DeleteContactHandler extends AbstractHandler {
 					HandlerUtil.getActiveWorkbenchWindow(event).getShell(), "Confirm",
 					"Are you sure you want to delete multiple contacts?");
 			if (confirmation) {
-				try {
-					contactService.bulkRemove(contactIdsToRemove);
-				} catch (ContactNotFoundException e) {
-					e.printStackTrace();
-				}
+					Activator.getStore().dispatch(new BulkRemoveAction(contactIdsToRemove));
 			}
 		}
 		return null;

@@ -6,22 +6,16 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-import com.b2international.phonebook3.rcp.model.Contact;
-
 public class ContactEditorInput implements IEditorInput {
 
-	private Contact contact;
+	private final String contactId;
 	
-	public ContactEditorInput() {
-		this.contact = Contact.createEmptyContact();
+	public ContactEditorInput(String contactId) {
+		this.contactId = contactId;
 	}
-	
-	public ContactEditorInput(Contact contact) {
-		this.contact = new Contact(contact);
-	}
-	
-	public Contact getContact() {
-		return contact;
+
+	public String getContactId() {
+		return contactId;
 	}
 	
 	@Override
@@ -41,7 +35,7 @@ public class ContactEditorInput implements IEditorInput {
 
 	@Override
 	public String getName() {
-		return contact.getFirstName() + " " + contact.getLastName();
+		return contactId;
 	}
 
 	@Override
@@ -51,12 +45,12 @@ public class ContactEditorInput implements IEditorInput {
 
 	@Override
 	public String getToolTipText() {
-		return contact.toString();
+		return contactId;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(contact.getId());
+		return Objects.hash(contactId);
 	}
 
 	@Override
@@ -65,7 +59,7 @@ public class ContactEditorInput implements IEditorInput {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		ContactEditorInput other = (ContactEditorInput) obj;
-		return Objects.equals(contact.getId(), other.contact.getId());
+		return Objects.equals(contactId, other.contactId);
 	}
 	
 }

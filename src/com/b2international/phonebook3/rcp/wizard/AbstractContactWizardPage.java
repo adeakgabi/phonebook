@@ -18,25 +18,25 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import com.b2international.phonebook3.rcp.model.Contact;
+import com.b2international.phonebook3.rcp.editor.EditorContact;
 
 public abstract class AbstractContactWizardPage<T> extends WizardPage {
 	
 	protected static final String HUNGARIAN_CHARSET_REGEX = "[a-zA-zÁÉŐÚŰÓÜÖÍáéűúőóüöí]+([ '-][a-zA-Z]+)*";
 	protected static final String PHONE_NUMBER_REGEX = "\\d{1}[-]?\\d{3}[-]?\\d{3}[-]?\\d{4}$";
 	
-	protected final Contact contact;
+	protected final EditorContact editorContact;
 	protected final DataBindingContext bindingContext;
 
-	protected AbstractContactWizardPage(Contact contact, String pageName) {
+	protected AbstractContactWizardPage(EditorContact editorContact, String pageName) {
 		super(pageName);
-		this.contact = contact;
+		this.editorContact = editorContact;
 		bindingContext = new DataBindingContext();
 		setTitle(pageName);
 		setPageComplete(false);
 		setDescription("Create a new contact.");
 	}
-	
+
 	public void createControl(Composite parent) {};
 	
 	protected void createLabel(Composite composite, String label) {

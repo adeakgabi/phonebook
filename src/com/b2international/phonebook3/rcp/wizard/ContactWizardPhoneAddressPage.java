@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
+import com.b2international.phonebook3.rcp.editor.EditorContact;
 import com.b2international.phonebook3.rcp.model.Address;
-import com.b2international.phonebook3.rcp.model.Contact;
 import com.google.common.collect.Lists;
 
 public final class ContactWizardPhoneAddressPage extends AbstractContactWizardPage<Address> {
@@ -43,8 +43,8 @@ public final class ContactWizardPhoneAddressPage extends AbstractContactWizardPa
 	private boolean isStreetValid = false;
 	private Map<String, String> errorMessageMap = new HashMap<>();
 
-	public ContactWizardPhoneAddressPage(Contact contact) {
-		super(contact, "Address, Phone number");
+	public ContactWizardPhoneAddressPage(EditorContact editorContact) {
+		super(editorContact, "Address, Phone number");
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public final class ContactWizardPhoneAddressPage extends AbstractContactWizardPa
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initDataBindingOnPhoneNumber(Text textField, String fieldName, Function<Object, IStatus> validator) {
 		final IObservableValue targetObservable = WidgetProperties.text(SWT.Modify).observe(textField);
-		final IObservableValue modelObservable = BeanProperties.value(fieldName).observe(contact.getPhoneNumbers());
+		final IObservableValue modelObservable = BeanProperties.value(fieldName).observe(editorContact.getPhoneNumbers());
 
 		final IConverter convertListToString = IConverter.create(List.class, String.class, (o1) -> ((String) o1).split(" "));
 		final UpdateValueStrategy strategy = new UpdateValueStrategy();
@@ -253,8 +253,8 @@ public final class ContactWizardPhoneAddressPage extends AbstractContactWizardPa
 	}
 
 	public void updatePhoneAndAddress() {
-		contact.setAddresses(Lists.newArrayList(address));
-		contact.setPhoneNumbers(Lists.newArrayList(phoneNumber));
+		editorContact.setAddresses(Lists.newArrayList(address));
+		editorContact.setPhoneNumbers(Lists.newArrayList(phoneNumber));
 	}
 
 }

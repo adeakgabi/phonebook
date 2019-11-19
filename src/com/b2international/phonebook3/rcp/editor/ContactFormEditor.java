@@ -7,16 +7,20 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 
-import com.b2international.phonebook3.rcp.api.ContactService;
-import com.b2international.phonebook3.rcp.model.Contact;
+import com.b2international.phonebook3.rcp.Activator;
+import com.b2international.phonebook3.rcp.contact.CloseEditorAction;
+import com.b2international.phonebook3.rcp.contact.ContactUpdateAction;
+import com.b2international.phonebook3.rcp.exceptions.WrongInputException;
+import com.b2international.phonebook3.rcp.redux.State;
+import com.b2international.phonebook3.rcp.redux.StateChangeListener;
 
-public class ContactFormEditor extends FormEditor {
+public class ContactFormEditor extends FormEditor implements StateChangeListener<State> {
 	
 	public static final String ID = "com.b2international.phonebook3.rcp.editor.contactformeditor";
 	
 	private FormPage infoPage;
 	private FormPage addressPhoneNumber;
-	private Contact contact;
+	private EditorContact editorContact;
 	protected boolean dirty;
 
 	@Override
@@ -24,11 +28,12 @@ public class ContactFormEditor extends FormEditor {
 		if (input instanceof ContactEditorInput) {
 			super.init(site, input);
 			final ContactEditorInput editorInput = (ContactEditorInput) input;
-			contact = editorInput.getContact();
-			setPartName(contact.getFirstName() + " " + contact.getLastName());
-			return;
+			editorContact = new EditorContact(Activator.getStore().getState().getContact(editorInput.getContactId()));
+			setPartName(editorContact.getFirstName() + " " + editorContact.getLastName());
+			Activator.getStore().addStateChangeListener(this);
+		} else {
+			throw new PartInitException("Wrong editor input." + input);
 		}
-		throw new PartInitException("Wrong editor input." + input);
 	}
 	
 	@Override
@@ -45,10 +50,20 @@ public class ContactFormEditor extends FormEditor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		final ContactService service = ContactService.getInstance();
-		service.saveContact(contact);
+			try {
+				Activator.getStore().dispatch(ContactUpdateAction.builder(editorContact.getId())
+						.title(editorContact.getTitle())
+						.firstName(editorContact.getFirstName())
+						.lastName(editorContact.getLastName())
+						.dateOfBirth(editorContact.getDateOfBirth())
+						.phoneNumbers(editorContact.getPhoneNumbers())
+						.addresses(editorContact.getAddresses())
+						.build());
+			} catch (WrongInputException e) {
+				e.printStackTrace();
+			}
 		dirty = false;
-		final String fullName = contact.getFirstName() + " " + contact.getLastName();
+		final String fullName = editorContact.getFirstName() + " " + editorContact.getLastName();
 		setPartName(fullName);
 		firePropertyChange(PROP_DIRTY);
 	}
@@ -67,8 +82,8 @@ public class ContactFormEditor extends FormEditor {
 		return dirty;
 	}
 	
-	public Contact getContact() {
-		return contact;
+	public EditorContact getContact() {
+		return editorContact;
 	}
 
 	public void notifyTableEditing() {
@@ -77,18 +92,22 @@ public class ContactFormEditor extends FormEditor {
 	}
 	
 	public String getPartName() {
-		return contact.getFirstName() + " " + contact.getLastName();
+		return editorContact.getFirstName() + " " + editorContact.getLastName();
 	}
 
 	@Override
 	public String toString() {
-		return "FormEditor: " + contact.getFirstName() + " " + contact.getLastName();
+		return "FormEditor: " + editorContact.getFirstName() + " " + editorContact.getLastName();
 	}
 	
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		super.dispose();
+		Activator.getStore().dispatch(new CloseEditorAction(this));
+	}
+
+	@Override
+	public void onStateChange(State oldState, State newState) {
+		
 	}
 
 }

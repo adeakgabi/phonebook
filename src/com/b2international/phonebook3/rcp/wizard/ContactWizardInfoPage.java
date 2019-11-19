@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Text;
 
-import com.b2international.phonebook3.rcp.model.Contact;
+import com.b2international.phonebook3.rcp.editor.EditorContact;
 import com.b2international.phonebook3.rcp.model.Title;
 
-public final class ContactWizardInfoPage extends AbstractContactWizardPage<Contact> {
+public final class ContactWizardInfoPage extends AbstractContactWizardPage<EditorContact> {
 
 	private static final String DATE_ERROR_KEY = "dateErrorMsg";
 	private static final String LAST_NAME_ERROR_KEY = "lastNameErrorMsg";
@@ -42,8 +42,8 @@ public final class ContactWizardInfoPage extends AbstractContactWizardPage<Conta
 	private boolean isDateValid = false;
 	private final Map<String, String> errorMessageMap = new HashMap<>();
 
-	public ContactWizardInfoPage(Contact contact) {
-		super(contact, "Contact Info");
+	public ContactWizardInfoPage(EditorContact editorContact) {
+		super(editorContact, "Contact Info");
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public final class ContactWizardInfoPage extends AbstractContactWizardPage<Conta
 
 		createLabel(composite, "First name:");
 		firstNameText = createText(composite);
-		initDataBindingOn(firstNameText, "firstName", Contact.class, contact, (firstName) -> {
+		initDataBindingOn(firstNameText, "firstName", EditorContact.class, editorContact, (firstName) -> {
 			if (firstName instanceof String) {
 				final String firstNameText = (String) firstName;
 				if (firstNameText.isEmpty()) {
@@ -99,7 +99,7 @@ public final class ContactWizardInfoPage extends AbstractContactWizardPage<Conta
 
 		createLabel(composite, "Last name:");
 		lastNameText = createText(composite);
-		initDataBindingOn(lastNameText, "lastName", Contact.class, contact, (value) -> {
+		initDataBindingOn(lastNameText, "lastName", EditorContact.class, editorContact, (value) -> {
 			if (value instanceof String) {
 				final String stringValue = (String) value;
 				if (stringValue.isEmpty()) {
@@ -149,7 +149,7 @@ public final class ContactWizardInfoPage extends AbstractContactWizardPage<Conta
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initDataBindingOn(ComboViewer comboViewer, String fieldName) {
 		final ISWTObservableValue<String> targetObservable = WidgetProperties.comboSelection().observe(comboViewer.getCombo());
-		final IObservableValue modelObservable = PojoProperties.value(Contact.class, fieldName).observe(contact);
+		final IObservableValue modelObservable = PojoProperties.value(EditorContact.class, fieldName).observe(editorContact);
 		
 		final IConverter stringToTitleConverter = IConverter.create(String.class, Title.class, (o1) -> {
 			final String title = (String) o1;
@@ -171,7 +171,7 @@ public final class ContactWizardInfoPage extends AbstractContactWizardPage<Conta
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initDataBindingOn(DateTime dateTime, String fieldName, Function<Object, IStatus> validator) {
 		final IObservableValue targetObservable = WidgetProperties.dateTimeSelection().observe(dateTime);
-		final IObservableValue modelObservable = PojoProperties.value(Contact.class, fieldName).observe(contact);
+		final IObservableValue modelObservable = PojoProperties.value(EditorContact.class, fieldName).observe(editorContact);
 		
 		final IConverter dateToLocalDateConverter = IConverter.create(Date.class, LocalDate.class, (o1) -> {
 			if(o1 instanceof Date) {

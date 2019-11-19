@@ -1,9 +1,9 @@
 package com.b2international.phonebook3.rcp.ui;
 
-import java.util.HashSet;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -18,45 +18,47 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.part.ViewPart;
 
 import com.b2international.phonebook3.rcp.Activator;
 import com.b2international.phonebook3.rcp.ImageConstants;
-import com.b2international.phonebook3.rcp.api.ContactService;
+import com.b2international.phonebook3.rcp.api.ContactFilter;
+import com.b2international.phonebook3.rcp.contact.OpenEditorAction;
 import com.b2international.phonebook3.rcp.editor.ContactEditorInput;
 import com.b2international.phonebook3.rcp.editor.ContactFormEditor;
 import com.b2international.phonebook3.rcp.model.Address;
 import com.b2international.phonebook3.rcp.model.Contact;
-import com.b2international.phonebook3.rcp.redux.Actions;
 import com.b2international.phonebook3.rcp.redux.State;
-import com.b2international.phonebook3.rcp.redux.StateReducer;
-import com.b2international.phonebook3.rcp.redux.Store;
+import com.b2international.phonebook3.rcp.redux.StateChangeListener;
 
-public class ContactTreeView extends ViewPart implements Observer {
+public class ContactTreeView extends ViewPart implements StateChangeListener<State> {
 
 	public static final String ID = "com.b2international.phonebook3.rcp.ui.contacttreeview";
 	public static final Image CONTACT_ICON = Activator.getImage(ImageConstants.CONTACT_ICON);
 	public static final Image ADDRESS_ICON	 = Activator.getImage(ImageConstants.ADDRESS_ICON);
 
-	private static Store<State> store;
-	
 	private TreeViewer viewer;
 
 	@Override
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		super.init(site, memento);
+		Activator.getStore().addStateChangeListener(this);
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		Activator.getStore().removeStateChangeListener(this);
+	}
+	
+	@Override
 	public void createPartControl(Composite parent) {
-		ContactService.getInstance().addObserver(this);
 		setPartName("Contact");
-		
-		StateReducer reducer = new StateReducer();
-		Set<FormEditor> editorState = new HashSet<>();
-		State state = new State(ContactService.getInstance().getContacts(), editorState);
-		store = Store.createStore(state, reducer);
-		store.dispatch(Actions.LOADFILE);
-		
 		final FillLayout layout = new FillLayout();
 		parent.setLayout(layout);
 		viewer = new TreeViewer(parent);
@@ -65,7 +67,7 @@ public class ContactTreeView extends ViewPart implements Observer {
 		tree.setLinesVisible(false);
 		viewer.setContentProvider(new TreeContentProvider());
 		viewer.setLabelProvider(new ContactLabelProvider());
-		viewer.setInput(ContactService.getInstance().getFlatContacts());
+		onStateChange(null, Activator.getStore().getState());
 		createContextMenu(viewer);
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
@@ -75,13 +77,7 @@ public class ContactTreeView extends ViewPart implements Observer {
 				if (selectedNode != null && selectedNode instanceof Contact) {
 					final Contact contact = (Contact) selectedNode;
 					final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-					try {
-						page.openEditor(new ContactEditorInput(contact), ContactFormEditor.ID);
-						editorState.add((FormEditor) page.getActiveEditor());
-						store.dispatch(Actions.OPEN_EDITOR);
-					} catch (PartInitException e) {
-						throw new RuntimeException(e);
-					}
+						Activator.getStore().dispatch(new OpenEditorAction(new ContactEditorInput(contact.getId()), ContactFormEditor.ID, page));
 				}
 			}
 		});
@@ -119,14 +115,8 @@ public class ContactTreeView extends ViewPart implements Observer {
 	}
 
 	@Override
-	public void update(Observable observable, Object arg) {
-		if (observable instanceof ContactService) {
-			ContactService contactService = (ContactService) observable;
-			viewer.setInput(contactService.getFlatContacts());
-			store.dispatch(Actions.UPDATE);
-		} else {
-			throw new IllegalArgumentException("Update request from illegal source");
-		}
+	public void onStateChange(State oldState, State newState) {
+		viewer.setInput(newState.getContactsMap());
 	}
 
 	protected void createContextMenu(Viewer viewer) {
@@ -169,5 +159,18 @@ public class ContactTreeView extends ViewPart implements Observer {
 				}
 			});
 		}
+	}
+	
+	public List<Contact> filter(ContactFilter filter) {
+		final State state = Activator.getStore().getState();
+		final Map<String, Contact> newState = new HashMap<>(state.getContactsMap());
+		return newState.values().stream()
+				.filter(filter::byTitle)
+				.filter(filter::byFirstName)
+				.filter(filter::byLastName)
+				.filter(filter::byDayOfBirth)
+				.filter(filter::byPhoneNumber)
+				.filter(filter::byAddress)
+				.collect(Collectors.toList());
 	}
 }

@@ -1,4 +1,4 @@
-package com.b2international.phonebook3.rcp.api;
+package com.b2international.phonebook3.rcp.contact;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,9 +7,10 @@ import com.b2international.phonebook3.rcp.exceptions.WrongInputException;
 import com.b2international.phonebook3.rcp.model.Address;
 import com.b2international.phonebook3.rcp.model.Contact;
 import com.b2international.phonebook3.rcp.model.Title;
+import com.b2international.phonebook3.rcp.redux.Action;
 import com.google.common.base.Strings;
 
-public final class ContactUpdate {
+public final class ContactUpdateAction implements Action {
 	
 	public static final class ContactUpdateBuilder {
 		
@@ -61,8 +62,8 @@ public final class ContactUpdate {
 			return this;
 		}
 		
-		public ContactUpdate build() {
-			return new ContactUpdate(id, title, firstName, lastName, dateOfBirth, phoneNumbers, addresses);
+		public ContactUpdateAction build() {
+			return new ContactUpdateAction(id, title, firstName, lastName, dateOfBirth, phoneNumbers, addresses);
 		}
 	}
 	
@@ -78,7 +79,7 @@ public final class ContactUpdate {
 	private final List<String> phoneNumbers;
 	private final List<Address> addresses;
 	
-	private ContactUpdate(
+	private ContactUpdateAction(
 				final String id, final Title title, final String firstName,
 				final String lastName, final LocalDate dateOfBirth,
 				final List<String> phoneNumbers, final List<Address> addresses) {
@@ -119,40 +120,34 @@ public final class ContactUpdate {
 	public List<Address> getAddresses() {
 		return addresses;
 	}
-
-	public boolean update(Contact contact) {
-		boolean changed = false;
+	
+	public Contact update(Contact contact) {
+		Contact updated = contact;
 		if (getTitle() != null) {
-			contact.setTitle(getTitle());
-			changed = true;
+			updated = updated.withTitle(getTitle());
 		}
 		
 		if (!Strings.isNullOrEmpty(getFirstName())) {
-			contact.setFirstName(getFirstName());
-			changed = true;
+			updated = updated.withFirstName(getFirstName());
 		}
 		
 		if (!Strings.isNullOrEmpty(getLastName())) {
-			contact.setLastName(getLastName());
-			changed = true;
+			updated = updated.withLastName(getLastName());
 		}
 		
 		if (getDateOfBirth() != null) {
-			contact.setDateOfBirth(getDateOfBirth());
-			changed = true;
+			updated = updated.withDateOfBirth(getDateOfBirth());
 		}
 		
 		if (getPhoneNumbers() != null) {
-			contact.setPhoneNumbers(getPhoneNumbers());
-			changed = true;
+			updated = updated.withPhoneNumber(getPhoneNumbers());
 		}
 		
 		if (getAddresses() != null) {
-			contact.setAddresses(getAddresses());
-			changed = true;
+			updated = updated.withAddress(getAddresses());
 		}
 		
-		return changed;
+		return updated;
 	}
 
 }
